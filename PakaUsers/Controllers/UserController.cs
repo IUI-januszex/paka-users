@@ -1,20 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Linq;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using PakaUsers.Model;
 
 namespace PakaUsers.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("user")]
     public class UserController : ControllerBase
     {
-        private readonly ILogger<UserController> _logger;
-        private IUserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserController(ILogger<UserController> logger, IUserRepository userRepository)
+        public UserController(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor)
         {
-            _logger = logger;
             _userRepository = userRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
         
         [HttpGet]
@@ -23,10 +25,10 @@ namespace PakaUsers.Controllers
             return Ok(_userRepository.GetAll());
         }
 
-        [HttpGet("{id:int}")]
-        public IActionResult GetUser(string id)
+        [HttpGet("{id:Guid}")]
+        public IActionResult GetUser(Guid id)
         {
-            var user = _userRepository.Get(id);
+            var user = _userRepository.Get(id.ToString());
             return Ok(user);
         }
         
@@ -35,7 +37,7 @@ namespace PakaUsers.Controllers
         {
             _userRepository.Delete(user);
             _userRepository.Save();
-            return Ok(user);
+            return NoContent();
         }
 
         [HttpPut]
@@ -44,6 +46,14 @@ namespace PakaUsers.Controllers
             _userRepository.Update(user);
             _userRepository.Save();
             return Ok(user);
+        }
+        
+        [HttpGet]
+        [Route("me")]
+        public IActionResult Me()
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.Claims.First(c => c.Type == "Id").Value;
+            return Ok(_userRepository.Get(userId));
         }
     }
 }

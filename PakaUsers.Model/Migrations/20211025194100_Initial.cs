@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -27,10 +28,18 @@ namespace PakaUsers.Model.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    Discriminator = table.Column<string>(type: "text", nullable: false),
+                    CompanyName = table.Column<string>(type: "text", nullable: true),
+                    Nip = table.Column<string>(type: "text", nullable: true),
+                    Client_Name = table.Column<string>(type: "text", nullable: true),
+                    Client_Surname = table.Column<string>(type: "text", nullable: true),
+                    SentPackages = table.Column<List<long>>(type: "bigint[]", nullable: true),
+                    Parcels = table.Column<List<long>>(type: "bigint[]", nullable: true),
                     Name = table.Column<string>(type: "text", nullable: true),
                     Surname = table.Column<string>(type: "text", nullable: true),
-                    UserType = table.Column<int>(type: "integer", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    Salary = table.Column<double>(type: "double precision", nullable: true),
+                    WarehouseId = table.Column<int>(type: "integer", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),

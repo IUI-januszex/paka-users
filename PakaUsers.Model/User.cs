@@ -4,11 +4,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace PakaUsers.Model
 {
-    public class User : IdentityUser
+    public abstract class User : IdentityUser
     {
-        public string Name { get; set; }
-        public string Surname { get; set; }
-        public UserType UserType { get; set; }
+        public abstract UserType UserType { get; }
         public bool IsActive { get; set; }
     }
 }

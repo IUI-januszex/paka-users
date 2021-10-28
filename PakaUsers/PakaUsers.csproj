@@ -25,4 +25,8 @@
       <ProjectReference Include="..\PakaUsers.Model\PakaUsers.Model.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Dto\Responses" />
+    </ItemGroup>
+
 </Project>
