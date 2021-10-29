@@ -19,14 +19,12 @@ namespace PakaUsers.Controllers
     public class AuthenticateController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
 
-        public AuthenticateController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager,
+        public AuthenticateController(UserManager<User> userManager,
             IConfiguration configuration)
         {
             _userManager = userManager;
-            _roleManager = roleManager;
             _configuration = configuration;
         }
 

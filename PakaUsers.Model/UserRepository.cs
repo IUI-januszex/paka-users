@@ -21,6 +21,11 @@ namespace PakaUsers.Model
             return _context.Users.ToList();
         }
 
+        public IQueryable<User> QueryUsers()
+        {
+            return _context.Users;
+        }
+
         public void Insert(User user)
         {
             _context.Users.Add(user);

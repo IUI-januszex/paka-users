@@ -88,6 +88,7 @@ namespace PakaUsers
 
                 });
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IHostedService, MyInitializer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -111,6 +112,7 @@ namespace PakaUsers
             {
                 endpoints.MapControllers();
             });
+            
         }
     }
 }

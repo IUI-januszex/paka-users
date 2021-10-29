@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace PakaUsers.Model
 {
@@ -10,5 +11,6 @@ namespace PakaUsers.Model
         void Delete(User user);
         void Update(User user);
         void Save();
+        public IQueryable<User> QueryUsers();
     }
 }
