@@ -17,8 +17,8 @@ namespace PakaUsers.Model
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("User ID =postgres;Password=postgres;" +
-                                     "Server=localhost;Port=5432;Database=users_database;" +
+            optionsBuilder.UseNpgsql("User ID =spring;Password=springsecret;" + "SearchPath=paka;" +
+                                     "Server=localhost;Port=5432;Database=telelearndb;" +
                                      "Integrated Security=true;Pooling=true;");
         }
         
