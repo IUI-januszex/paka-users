@@ -1,6 +1,8 @@
-﻿namespace PakaUsers.Model
+﻿using System;
+
+namespace PakaUsers.Dto.Responses
 {
-    public abstract class Worker : User
+    public class WorkerResponseDto : UserResponseDto
     {
         public string Name { get; set; }
         public string Surname { get; set; }

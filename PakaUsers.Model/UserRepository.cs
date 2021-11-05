@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace PakaUsers.Model
@@ -31,9 +32,9 @@ namespace PakaUsers.Model
             _context.Users.Add(user);
         }
 
-        public void Delete(User user)
+        public void Delete(string id)
         {
-            _context.Users.Remove(user);
+            _context.Users.Remove(Get(id));
         }
 
         public void Update(User user)

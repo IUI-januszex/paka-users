@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PakaUsers.Dto.Requests;
+using PakaUsers.Dto.Responses;
 using PakaUsers.IdentityAuth;
 using PakaUsers.Model;
 
@@ -21,36 +22,36 @@ namespace PakaUsers.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RegisterIndividualClient([FromBody] RegisterIndividualClientDto model)
+        public async Task<IActionResult> RegisterIndividualClient([FromBody] RegisterIndividualClientDto request)
         {
-            var userEmailExists = await _userManager.FindByEmailAsync(model.Email);
+            var userEmailExists = await _userManager.FindByEmailAsync(request.Email);
             if (userEmailExists != null)
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new Response {Status = "Error", Message = "Email already exists!"});
 
-            var userNameExists = await _userManager.FindByNameAsync(model.UserName);
+            var userNameExists = await _userManager.FindByNameAsync(request.UserName);
             if (userNameExists != null)
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new Response {Status = "Error", Message = "UserName already exists!"});
 
             var client = new Client()
             {
-                Email = model.Email,
+                Email = request.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                Name = model.Name,
-                Surname = model.Surname,
-                PhoneNumber = model.PhoneNumber,
-                UserName = model.UserName,
-                IsActive = true
+                Name = request.Name,
+                Surname = request.Surname,
+                PhoneNumber = request.PhoneNumber,
+                UserName = request.UserName,
+                IsActive = true,
             };
 
-            var result = await _userManager.CreateAsync(client);
+            var result = await _userManager.CreateAsync(client, request.Password);
 
             if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status400BadRequest,
                     new Response {Status = "Error", Message = result.ToString()});
 
-            return Ok(new Response {Status = "Success", Message = "Individual client created successfully!"});
+            return Ok(UserResponseDto.Of(client));
         }
     }
 }

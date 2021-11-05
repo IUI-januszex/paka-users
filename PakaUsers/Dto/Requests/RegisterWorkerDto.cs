@@ -11,6 +11,6 @@ namespace PakaUsers.Dto.Requests
         [Required(ErrorMessage = "Warehouse is required")]
         public int Warehouse { get; set; }
         [Required(ErrorMessage = "Salary is required")]
-        public double Salary { get; set; }
+        public decimal Salary { get; set; }
     }
 }

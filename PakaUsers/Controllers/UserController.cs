@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PakaUsers.Dto.Responses;
 using PakaUsers.Model;
 
 namespace PakaUsers.Controllers
 {
     [ApiController]
-    [Route("user")]
+    [Route("api/user")]
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
@@ -32,10 +34,10 @@ namespace PakaUsers.Controllers
             return Ok(user);
         }
         
-        [HttpDelete]
-        public IActionResult DeleteUser(User user)
+        [HttpDelete("{id:Guid}")]
+        public IActionResult DeleteUser(Guid id)
         {
-            _userRepository.Delete(user);
+            _userRepository.Delete(id.ToString());
             _userRepository.Save();
             return NoContent();
         }
@@ -53,7 +55,7 @@ namespace PakaUsers.Controllers
         public IActionResult Me()
         {
             var userId = _httpContextAccessor.HttpContext?.User.Claims.First(c => c.Type == "Id").Value;
-            return Ok(_userRepository.Get(userId));
+            return Ok(UserResponseDto.Of(_userRepository.Get(userId)));
         }
     }
 }

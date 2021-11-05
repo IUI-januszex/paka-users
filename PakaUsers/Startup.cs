@@ -74,6 +74,7 @@ namespace PakaUsers
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    
                 })
                 .AddJwtBearer(options =>
                 {
@@ -105,8 +106,8 @@ namespace PakaUsers
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PakaUsers v1"));
             }
 
-            app.UseHttpsRedirection();
-
+           // app.UseHttpsRedirection();
+            app.UseMiddleware<ErrorHandlerMiddleware>();
             app.UseRouting();
 
             app.UseAuthorization();
