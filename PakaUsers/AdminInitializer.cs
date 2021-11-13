@@ -24,16 +24,14 @@ namespace PakaUsers
             using var scope = _serviceScopeFactory.CreateScope();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
             var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
-            if (!AdminExists(userRepository))
+            if (AdminExists(userRepository)) return Task.CompletedTask;
+            var admin = new Admin()
             {
-                var admin = new Admin()
-                {
-                    UserName = "admin",
-                    Email = "admin@januszex.pl"
-                };
-                var createdUser = userManager.CreateAsync(admin, "Admin123!").Result;
-                return Task.CompletedTask;
-            }
+                UserName = "admin",
+                Email = "admin@januszex.pl",
+                IsActive = true
+            };
+            var createdUser = userManager.CreateAsync(admin, "Admin123!").Result;
             return Task.CompletedTask;
         }
 

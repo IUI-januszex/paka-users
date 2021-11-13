@@ -8,6 +8,7 @@ namespace PakaUsers.Dto.Requests
         public string UserName { get; set; }
         
         [Required(ErrorMessage = "Email Address is required")]
+        [EmailAddress]
         public string Email { get; set; }
         [Required(ErrorMessage = "Phone Number is required")]
         public string PhoneNumber { get; set; }
