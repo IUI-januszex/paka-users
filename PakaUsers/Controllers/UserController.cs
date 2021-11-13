@@ -91,8 +91,9 @@ namespace PakaUsers.Controllers
                 Zip = request.Zip,
                 BuildingNumber = request.BuildingNumber,
                 ApartmentNumber = request?.ApartmentNumber,
-                Name = request.Name,
-                Surname = request.Surname,
+                Name = request?.Name,
+                Surname = request?.Surname,
+                CompanyName = request?.CompanyName
             };
 
             var user = _userRepository.Get(userId);

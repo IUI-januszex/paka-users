@@ -7,6 +7,7 @@ namespace PakaUsers.Dto.Requests
         public string AddressName { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
+        public string CompanyName { get; set; }
         [EmailAddress]
         public string Email { get; set; }
         public string City { get; set; }
