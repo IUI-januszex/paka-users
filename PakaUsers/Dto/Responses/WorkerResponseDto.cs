@@ -8,5 +8,6 @@ namespace PakaUsers.Dto.Responses
         public string Surname { get; set; }
         public decimal Salary { get; set; }
         public int WarehouseId { get; set; }
+        public string WarehouseType { get; set; }
     }
 }
