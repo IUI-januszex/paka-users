@@ -42,7 +42,8 @@ namespace PakaUsers.Controllers
                 Name = request.Name,
                 Surname = request.Surname,
                 Salary = request.Salary,
-                WarehouseId = request.Warehouse,
+                WarehouseId = request?.WarehouseId,
+                WarehouseType = request.WarehouseType,
                 IsActive = false
             };
 
