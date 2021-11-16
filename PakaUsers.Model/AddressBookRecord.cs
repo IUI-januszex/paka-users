@@ -1,6 +1,6 @@
 ﻿namespace PakaUsers.Model
 {
-    public class Address
+    public class AddressBookRecord
     {
         public long Id { get; set; }
         public string AddressName { get; set; }

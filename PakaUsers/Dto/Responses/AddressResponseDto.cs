@@ -15,19 +15,19 @@ namespace PakaUsers.Dto.Responses
         public string BuildingNumber { get; set; }
         public string ApartmentNumber { get; set; }
 
-        public static AddressResponseDto ToDto(string personId, Address address)
+        public static AddressResponseDto ToDto(string personId, AddressBookRecord addressBookRecord)
         {
             return new AddressResponseDto
             {
                 PersonId = personId,
-                AddressName = address.AddressName,
-                Personalities = address.Personalities,
-                Email = address.Email,
-                City = address.City,
-                Street = address.Street,
-                Zip = address.Zip,
-                BuildingNumber = address.BuildingNumber,
-                ApartmentNumber = address?.ApartmentNumber
+                AddressName = addressBookRecord.AddressName,
+                Personalities = addressBookRecord.Personalities,
+                Email = addressBookRecord.Email,
+                City = addressBookRecord.City,
+                Street = addressBookRecord.Street,
+                Zip = addressBookRecord.Zip,
+                BuildingNumber = addressBookRecord.BuildingNumber,
+                ApartmentNumber = addressBookRecord?.ApartmentNumber
             };
         }
     }

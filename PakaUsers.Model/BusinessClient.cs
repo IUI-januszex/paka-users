@@ -7,12 +7,12 @@ namespace PakaUsers.Model
     {
         public BusinessClient()
         {
-            AddressBook = new List<Address>();
+            AddressBook = new List<AddressBookRecord>();
         }
         
         public string CompanyName { get; set; }
         public string Nip { get; set; }
-        public List<Address> AddressBook { get; set; }
+        public List<AddressBookRecord> AddressBook { get; set; }
         public override UserType UserType => UserType.ClientBiz;
     }
 }

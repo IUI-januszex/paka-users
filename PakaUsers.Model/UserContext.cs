@@ -13,7 +13,7 @@ namespace PakaUsers.Model
         public DbSet<Logistician> Logistician { get; set; }
         public DbSet<Courier> Courier { get; set; }
         public DbSet<Admin> Admin { get; set; }
-        public DbSet<Address> Address { get; set; }
+        public DbSet<AddressBookRecord> Address { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

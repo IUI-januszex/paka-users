@@ -7,11 +7,11 @@ namespace PakaUsers.Model
     {
         public Client()
         {
-            AddressBook = new List<Address>();
+            AddressBook = new List<AddressBookRecord>();
         }
         public string Name { get; set; }
         public string Surname { get; set; }
-        public List<Address> AddressBook { get; set; }
+        public List<AddressBookRecord> AddressBook { get; set; }
         public override UserType UserType => UserType.ClientInd;
     }
 }

@@ -82,7 +82,7 @@ namespace PakaUsers.Controllers
         {
             var userId = _httpContextAccessor.HttpContext?.User.Claims.First(c => c.Type == "Id").Value;
             
-            var address = new Address
+            var address = new AddressBookRecord
             {
                 AddressName = request.AddressName,
                 Email = request.Email,

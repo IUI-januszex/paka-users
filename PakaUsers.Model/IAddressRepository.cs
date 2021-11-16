@@ -4,6 +4,6 @@ namespace PakaUsers.Model
 {
     public interface IAddressRepository
     {
-        public List<Address> GetByUserId(string userId);
+        public List<AddressBookRecord> GetByUserId(string userId);
     }
 }

@@ -12,7 +12,7 @@ namespace PakaUsers.Model
             _context = context;
         }
         
-        public List<Address> GetByUserId(string userId)
+        public List<AddressBookRecord> GetByUserId(string userId)
         {
             return _context.Address.Where(address => address.BusinessClientId == userId || address.ClientId == userId)
                 .ToList();
