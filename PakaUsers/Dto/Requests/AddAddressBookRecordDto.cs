@@ -2,7 +2,7 @@
 
 namespace PakaUsers.Dto.Requests
 {
-    public class AddAddressDto
+    public class AddAddressBookRecordDto
     {
         [Required(ErrorMessage = "Address name is required")]
         public string AddressName { get; set; }

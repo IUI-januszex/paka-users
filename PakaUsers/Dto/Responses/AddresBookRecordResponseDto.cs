@@ -3,7 +3,7 @@ using PakaUsers.Model;
 
 namespace PakaUsers.Dto.Responses
 {
-    public class AddressResponseDto 
+    public class AddresBookRecordResponseDto 
     {
         public string PersonId { get; set; }
         public string AddressName { get; set; }
@@ -15,9 +15,9 @@ namespace PakaUsers.Dto.Responses
         public string BuildingNumber { get; set; }
         public string FlatNumber { get; set; }
 
-        public static AddressResponseDto ToDto(string personId, AddressBookRecord addressBookRecord)
+        public static AddresBookRecordResponseDto ToDto(string personId, AddressBookRecord addressBookRecord)
         {
-            return new AddressResponseDto
+            return new AddresBookRecordResponseDto
             {
                 PersonId = personId,
                 AddressName = addressBookRecord.AddressName,

@@ -78,7 +78,7 @@ namespace PakaUsers.Controllers
 
         [HttpPost]
         [Route("me/address")]
-        public IActionResult Address([FromBody] AddAddressDto request)
+        public IActionResult Address([FromBody] AddAddressBookRecordDto request)
         {
             var userId = _httpContextAccessor.HttpContext?.User.Claims.First(c => c.Type == "Id").Value;
             
@@ -108,7 +108,7 @@ namespace PakaUsers.Controllers
             }
 
             _userRepository.Save();
-            return Ok(AddressResponseDto.ToDto(user.Id, address));
+            return Ok(AddresBookRecordResponseDto.ToDto(user.Id, address));
         }
 
         [HttpGet]
