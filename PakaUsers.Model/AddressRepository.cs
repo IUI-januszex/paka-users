@@ -14,7 +14,7 @@ namespace PakaUsers.Model
         
         public List<AddressBookRecord> GetByUserId(string userId)
         {
-            return _context.Address.Where(address => address.BusinessClientId == userId || address.ClientId == userId)
+            return _context.AddressBook.Where(address => address.BusinessClientId == userId || address.ClientId == userId)
                 .ToList();
         }
     }

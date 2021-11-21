@@ -15,10 +15,10 @@ namespace PakaUsers.Dto.Requests
         public string City { get; set; }
         [Required(ErrorMessage = "Street is required")]
         public string Street { get; set; }
-        [Required(ErrorMessage = "Zip is required")]
-        public string Zip { get; set; }
+        [Required(ErrorMessage = "Postal code is required")]
+        public string PostalCode { get; set; }
         [Required(ErrorMessage = "Building number is required")]
         public string BuildingNumber { get; set; }
-        public string ApartmentNumber { get; set; }
+        public string FlatNumber { get; set; }
     }
 }

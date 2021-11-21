@@ -88,9 +88,9 @@ namespace PakaUsers.Controllers
                 Email = request.Email,
                 City = request.City,
                 Street = request.Street,
-                Zip = request.Zip,
+                PostalCode = request.PostalCode,
                 BuildingNumber = request.BuildingNumber,
-                ApartmentNumber = request?.ApartmentNumber,
+                FlatNumber = request?.FlatNumber,
                 Personalities = request.Personalities
             };
 
