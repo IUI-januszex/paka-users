@@ -1,8 +1,10 @@
-﻿namespace PakaUsers.IdentityAuth
+﻿using System;
+
+namespace PakaUsers.IdentityAuth
 {
     public class Response
     {
-        public string Status { get; set; }
+        public DateTime Timestamp { get; } = DateTime.Now;
         public string Message { get; set; }
     }
 }

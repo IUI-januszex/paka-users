@@ -26,13 +26,11 @@ namespace PakaUsers.Controllers
         {
             var userEmailExists = await _userManager.FindByEmailAsync(request.Email);
             if (userEmailExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new Response {Status = "Error", Message = "Email already exists!"});
+                return BadRequest(new Response {Message = "Email already exists!"});
 
             var userNameExists = await _userManager.FindByNameAsync(request.UserName);
             if (userNameExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new Response {Status = "Error", Message = "UserName already exists!"});
+                return BadRequest(new Response {Message = "UserName already exists!"});
 
             var client = new Client()
             {
@@ -48,8 +46,7 @@ namespace PakaUsers.Controllers
             var result = await _userManager.CreateAsync(client, request.Password);
 
             if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status400BadRequest,
-                    new Response {Status = "Error", Message = result.ToString()});
+                return BadRequest(new Response {Message = result.ToString()});
 
             return Ok(UserResponseDto.Of(client));
         }

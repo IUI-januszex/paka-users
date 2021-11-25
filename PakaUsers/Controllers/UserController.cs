@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +10,7 @@ using PakaUsers.Dto.Requests;
 using PakaUsers.Dto.Responses;
 using PakaUsers.IdentityAuth;
 using PakaUsers.Model;
+using PakaUsers.Services;
 
 namespace PakaUsers.Controllers
 {
@@ -17,32 +19,43 @@ namespace PakaUsers.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAddressRepository _addressRepository;
+        private readonly IUserService _userService;
+        private readonly StatusCodeHelper _statusCodeHelper = new();
 
-        public UserController(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IAddressRepository addressRepository)
+        public UserController(IUserRepository userRepository,
+            IAddressRepository addressRepository, IUserService userService)
         {
             _userRepository = userRepository;
-            _httpContextAccessor = httpContextAccessor;
             _addressRepository = addressRepository;
+            _userService = userService;
         }
 
         [HttpGet]
         public IActionResult GetAllUsers()
         {
-            return Ok(_userRepository.GetAll());
+            return !_userService.HasCurrentUserAnyRole(UserType.Admin)
+                ? _statusCodeHelper.UnauthorizedErrorResponse()
+                : Ok(UserResponseDto.Of(_userRepository.GetAll()));
         }
 
         [HttpGet("{id:Guid}")]
         public IActionResult GetUser(Guid id)
         {
-            var user = _userRepository.Get(id.ToString());
-            return Ok(UserResponseDto.Of(user));
+            return !_userService.HasCurrentUserAnyRole(UserType.Admin, UserType.Courier, UserType.Logistician) 
+                ? _statusCodeHelper.UnauthorizedErrorResponse() 
+                : Ok(UserResponseDto.Of(_userRepository.Get(id.ToString())));
         }
 
-        [HttpGet("{email}")]
+        [HttpGet]
+        [Route("/email/{email}")]
         public IActionResult GetUserByEmail(string email)
         {
+            if (!_userService.IsUserLogged())
+            {
+                return _statusCodeHelper.UnauthorizedErrorResponse();
+            }
+
             var user = _userRepository.GetAll().FirstOrDefault(user => user.Email == email);
             return Ok(UserResponseDto.Of(user));
         }
@@ -50,6 +63,12 @@ namespace PakaUsers.Controllers
         [HttpDelete("{id:Guid}")]
         public IActionResult DeleteUser(Guid id)
         {
+            if (!_userService.HasCurrentUserAnyRole(UserType.Admin))
+            {
+                return _statusCodeHelper.UnauthorizedErrorResponse();
+            }
+
+            ///TODO żeby usuwało wszystko poza id
             _userRepository.Delete(id.ToString());
             _userRepository.Save();
             return NoContent();
@@ -58,12 +77,18 @@ namespace PakaUsers.Controllers
         [HttpPut("{id:guid}")]
         public IActionResult UpdateUser(Guid id, [FromBody] User user)
         {
+            if (!_userService.HasCurrentUserAnyRole(UserType.Admin)
+                || !IsCurrentUserId(id.ToString()))
+            {
+                return _statusCodeHelper.UnauthorizedErrorResponse();
+            }
+
             var userToUpdate = _userRepository.Get(id.ToString());
             _userRepository.Update(user);
 
             userToUpdate.UserName = user?.UserName;
             userToUpdate.Email = user?.Email;
-            
+
             _userRepository.Save();
             return Ok(UserResponseDto.Of(user));
         }
@@ -72,16 +97,22 @@ namespace PakaUsers.Controllers
         [Route("me")]
         public IActionResult Me()
         {
-            var userId = _httpContextAccessor.HttpContext?.User.Claims.First(c => c.Type == "Id").Value;
-            return Ok(UserResponseDto.Of(_userRepository.Get(userId)));
+            return !_userService.IsUserLogged() 
+                ? _statusCodeHelper.UnauthorizedErrorResponse() 
+                : Ok(UserResponseDto.Of(_userService.GetCurrentUser()));
         }
 
         [HttpPost]
-        [Route("me/address")]
+        [Route("me/address-book")]
         public IActionResult Address([FromBody] AddAddressBookRecordDto request)
         {
-            var userId = _httpContextAccessor.HttpContext?.User.Claims.First(c => c.Type == "Id").Value;
-            
+            if (!_userService.HasCurrentUserAnyRole(UserType.ClientBiz, UserType.ClientInd))
+            {
+                return _statusCodeHelper.UnauthorizedErrorResponse();
+            }
+
+            var user = _userService.GetCurrentUser();
+
             var address = new AddressBookRecord
             {
                 AddressName = request.AddressName,
@@ -93,8 +124,6 @@ namespace PakaUsers.Controllers
                 FlatNumber = request?.FlatNumber,
                 Personalities = request.Personalities
             };
-
-            var user = _userRepository.Get(userId);
 
             _userRepository.Update(user);
             switch (user)
@@ -112,13 +141,39 @@ namespace PakaUsers.Controllers
         }
 
         [HttpGet]
-        [Route("/me/AddressBook")]
+        [Route("/me/address-book")]
         public IActionResult Address()
         {
-            var userId = _httpContextAccessor.HttpContext?.User.Claims.First(c => c.Type == "Id").Value;
+            if (!_userService.HasCurrentUserAnyRole(UserType.ClientBiz, UserType.ClientInd))
+            {
+                return _statusCodeHelper.UnauthorizedErrorResponse();
+            }
 
-            var add = _addressRepository.GetByUserId(userId);
-            return Ok(add);
+            var user = _userService.GetCurrentUser();
+
+            var userAddressBook = _addressRepository.GetByUserId(user.Id);
+            return Ok(userAddressBook);
+        }
+
+        [HttpPut]
+        [Route("/activate-user/{id:Guid}")]
+        public IActionResult Activate(Guid id, [FromBody] ActivationDto request)
+        {
+            if (!_userService.HasCurrentUserAnyRole(UserType.Admin))
+            {
+                return _statusCodeHelper.UnauthorizedErrorResponse();
+            }
+
+            var userToActivate = _userRepository.Get(id.ToString());
+            _userRepository.Update(userToActivate);
+            userToActivate.IsActive = request.IsActive;
+            _userRepository.Save();
+            return Ok();
+        }
+
+        private bool IsCurrentUserId(string id)
+        {
+            return _userService.GetCurrentUser()?.Id.Equals(id) ?? false;
         }
     }
 }

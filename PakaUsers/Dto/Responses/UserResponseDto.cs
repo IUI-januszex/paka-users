@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http.Json;
 using PakaUsers.Model;
 
 namespace PakaUsers.Dto.Responses
@@ -62,6 +65,11 @@ namespace PakaUsers.Dto.Responses
                         UserType = user.UserType,
                     };
             }
+        }
+
+        public static List<UserResponseDto> Of(IEnumerable<User> users)
+        {
+            return users.Select(Of).ToList();
         }
     }
 }

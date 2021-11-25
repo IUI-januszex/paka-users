@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PakaUsers.Model;
+using PakaUsers.Services;
 
 namespace PakaUsers
 {
@@ -67,6 +68,7 @@ namespace PakaUsers
             services.AddDbContext<UserContext>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAddressRepository, AddressRepository>();
+            services.AddScoped<IUserService, UserService>();
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<UserContext>()
                 .AddDefaultTokenProviders();
