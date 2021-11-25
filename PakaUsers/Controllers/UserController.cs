@@ -165,6 +165,11 @@ namespace PakaUsers.Controllers
             }
 
             var userToActivate = _userRepository.Get(id.ToString());
+            
+            if (userToActivate.UserType == UserType.Admin)
+            {
+                return BadRequest(new Response{Message = "Bad request"});
+            }
             _userRepository.Update(userToActivate);
             userToActivate.IsActive = request.IsActive;
             _userRepository.Save();

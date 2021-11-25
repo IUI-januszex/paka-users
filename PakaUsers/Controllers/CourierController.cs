@@ -7,6 +7,7 @@ using PakaUsers.Dto.Requests;
 using PakaUsers.Dto.Responses;
 using PakaUsers.IdentityAuth;
 using PakaUsers.Model;
+using PakaUsers.Services;
 
 namespace PakaUsers.Controllers
 {
@@ -15,15 +16,22 @@ namespace PakaUsers.Controllers
     public class CourierController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
+        private readonly IUserService _userService;
+        private readonly StatusCodeHelper _statusCodeHelper = new();
 
-        public CourierController(UserManager<User> userManager)
+        public CourierController(UserManager<User> userManager, IUserService userService)
         {
             _userManager = userManager;
+            _userService = userService;
         }
 
         [HttpPost]
         public async Task<IActionResult> RegisterCourier([FromBody] RegisterWorkerDto request)
         {
+            if (!_userService.HasCurrentUserAnyRole(UserType.Admin))
+            {
+                return _statusCodeHelper.UnauthorizedErrorResponse();
+            }
             var userEmailExists = await _userManager.FindByEmailAsync(request.Email);
             if (userEmailExists != null)
                 return BadRequest(new Response {Message = "Email already exists!"});

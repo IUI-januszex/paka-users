@@ -8,6 +8,7 @@ using PakaUsers.Dto.Requests;
 using PakaUsers.Dto.Responses;
 using PakaUsers.IdentityAuth;
 using PakaUsers.Model;
+using PakaUsers.Services;
 
 namespace PakaUsers.Controllers
 {
@@ -17,23 +18,20 @@ namespace PakaUsers.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IUserRepository _userRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserService _userService;
         private readonly StatusCodeHelper _statusCodeHelper = new();
 
-        public LogisticianController(UserManager<User> userManager, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository)
+        public LogisticianController(UserManager<User> userManager, IUserRepository userRepository, IUserService userService)
         {
             _userManager = userManager;
-            _httpContextAccessor = httpContextAccessor;
             _userRepository = userRepository;
+            _userService = userService;
         }
 
         [HttpPost]
         public async Task<IActionResult> RegisterLogistician([FromBody] RegisterWorkerDto request)
         {
-            var userId = _httpContextAccessor.HttpContext?.User.Claims.First(c => c.Type == "Id").Value;
-            var currentUser = _userRepository.Get(userId);
-
-            if (currentUser is not Admin)
+            if (!_userService.HasCurrentUserAnyRole(UserType.Admin))
             {
                 return _statusCodeHelper.UnauthorizedErrorResponse();
             }
