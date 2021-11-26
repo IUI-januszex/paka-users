@@ -48,7 +48,7 @@ namespace PakaUsers.Controllers
                 Name = request.Name,
                 Surname = request.Surname,
                 Salary = request.Salary,
-                WarehouseId = request?.WarehouseId,
+                WarehouseId = request.WarehouseId,
                 WarehouseType = request.WarehouseType,
                 IsActive = false
             };
@@ -57,7 +57,7 @@ namespace PakaUsers.Controllers
             if (!result.Succeeded)
                 return BadRequest(new Response {Message = result.ToString()});
 
-            return Ok(UserResponseDto.Of(courier));
+            return Ok(WorkerResponseDto.Of(courier));
         }
     }
 }

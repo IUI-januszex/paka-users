@@ -19,42 +19,13 @@ namespace PakaUsers.Dto.Responses
             switch (user.UserType)
             {
                 case UserType.Logistician:
-                    return new WorkerResponseDto()
-                    {
-                        Id = user.Id,
-                        UserName = user.UserName,
-                        Email = user.Email,
-                        IsActive = user.IsActive,
-                        UserType = user.UserType,
-                        Name = (user as Logistician)?.Name,
-                        Surname = (user as Logistician)?.Surname,
-                        Salary = (user as Logistician)?.Salary ?? 0M,
-                        WarehouseId = (user as Logistician)?.WarehouseId ?? 0
-                    };
+                    return WorkerResponseDto.Of((Worker)user);
                 case UserType.Courier:
                     goto case UserType.Logistician;
                 case UserType.ClientBiz:
-                    return new BusinessClientResponseDto()
-                    {
-                        Id = user.Id,
-                        UserName = user.UserName,
-                        Email = user.Email,
-                        IsActive = user.IsActive,
-                        UserType = user.UserType,
-                        CompanyName = (user as BusinessClient)?.CompanyName,
-                        Nip = (user as BusinessClient)?.Nip
-                    };
+                    return BusinessClientResponseDto.Of((BusinessClient) user);
                 case UserType.ClientInd:
-                    return new ClientResponseDto()
-                    {
-                        Id = user.Id,
-                        UserName = user.UserName,
-                        Email = user.Email,
-                        IsActive = user.IsActive,
-                        UserType = user.UserType,
-                        Name = (user as Client)?.Name,
-                        Surname = (user as Client)?.Surname,
-                    };
+                    return ClientResponseDto.Of((Client) user);
                 default:
                     return new UserResponseDto()
                     {
@@ -67,9 +38,16 @@ namespace PakaUsers.Dto.Responses
             }
         }
 
-        public static List<UserResponseDto> Of(IEnumerable<User> users)
+        public static IEnumerable<UserResponseDto> Of(IEnumerable<User> users)
         {
-            return users.Select(Of).ToList();
+            return users.Select(Of);
         }
+        /*public static List<UserResponseDto> OfLogisticians(IEnumerable<User> users)
+        {
+            var logs = users.Select(user => user as Logistician).ToList();
+            var t = logs.Select(Of).ToList();
+            var x = 0;
+            return logs.Select(Of).ToList();
+        }*/
     }
 }

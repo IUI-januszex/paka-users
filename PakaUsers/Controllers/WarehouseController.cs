@@ -30,12 +30,14 @@ namespace PakaUsers.Controllers
                 return _statusCodeHelper.UnauthorizedErrorResponse();
             }
 
-            var logisticians = _userRepository.GetAll().Where(user =>
-                user.UserType == UserType.Logistician && ((Logistician) user).WarehouseId == id);
-            
-            return Ok(UserResponseDto.Of(logisticians));
+            return Ok(
+                _userRepository.GetAll()
+                    .Where(user => user.UserType == UserType.Logistician)
+                    .Cast<Logistician>()
+                    .Where(logistician => logistician.WarehouseId == id)
+                    .Select(WorkerResponseDto.Of));
         }
-        
+
         [HttpGet]
         [Route("/couriers/{id:long}")]
         public IActionResult GetCouriersByWarehouseId(long id)
@@ -45,10 +47,12 @@ namespace PakaUsers.Controllers
                 return _statusCodeHelper.UnauthorizedErrorResponse();
             }
 
-            var couriers = _userRepository.GetAll().Where(user =>
-                user.UserType == UserType.Courier && ((Logistician) user).WarehouseId == id);
-            
-            return Ok(UserResponseDto.Of(couriers));
+            return Ok(
+                _userRepository.GetAll()
+                    .Where(user => user.UserType == UserType.Courier)
+                    .Cast<Courier>()
+                    .Where(courier => courier.WarehouseId == id)
+                    .Select(WorkerResponseDto.Of));
         }
     }
 }

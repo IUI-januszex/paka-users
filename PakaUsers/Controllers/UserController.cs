@@ -68,7 +68,7 @@ namespace PakaUsers.Controllers
                 return _statusCodeHelper.UnauthorizedErrorResponse();
             }
 
-            ///TODO żeby usuwało wszystko poza id
+            ///TODO żeby usuwało wszystko poza id i na HttpPut - zanonimizować - dodatkowy endpoint - tylko admin
             _userRepository.Delete(id.ToString());
             _userRepository.Save();
             return NoContent();
@@ -144,15 +144,9 @@ namespace PakaUsers.Controllers
         [Route("/me/address-book")]
         public IActionResult Address()
         {
-            if (!_userService.HasCurrentUserAnyRole(UserType.ClientBiz, UserType.ClientInd))
-            {
-                return _statusCodeHelper.UnauthorizedErrorResponse();
-            }
-
-            var user = _userService.GetCurrentUser();
-
-            var userAddressBook = _addressRepository.GetByUserId(user.Id);
-            return Ok(userAddressBook);
+            return !_userService.HasCurrentUserAnyRole(UserType.ClientBiz, UserType.ClientInd) 
+                ? _statusCodeHelper.UnauthorizedErrorResponse() 
+                : Ok(_addressRepository.GetByUserId(_userService.GetCurrentUser().Id));
         }
 
         [HttpPut]

@@ -31,7 +31,11 @@ namespace PakaUsers
         {
 
             services.AddControllers().AddJsonOptions(
-                options => { options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase; }
+                options =>
+                {
+                    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                    options.JsonSerializerOptions.WriteIndented = true;
+                }
             );
             services.AddSwaggerGen(c =>
             {

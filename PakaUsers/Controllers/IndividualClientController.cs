@@ -48,7 +48,7 @@ namespace PakaUsers.Controllers
             if (!result.Succeeded)
                 return BadRequest(new Response {Message = result.ToString()});
 
-            return Ok(UserResponseDto.Of(client));
+            return Ok(ClientResponseDto.Of(client));
         }
     }
 }
