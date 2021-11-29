@@ -11,6 +11,6 @@ namespace PakaUsers.Model
         void Delete(string id);
         void Update(User user);
         void Save();
-        public IQueryable<User> QueryUsers();
+        public void Anonymize(string id);
     }
 }

@@ -23,11 +23,6 @@ namespace PakaUsers.Model
             return _context.Users.ToList();
         }
 
-        public IQueryable<User> QueryUsers()
-        {
-            return _context.Users;
-        }
-
         public void Insert(User user)
         {
             _context.Users.Add(user);
@@ -46,6 +41,50 @@ namespace PakaUsers.Model
         public void Save()
         {
             _context.SaveChanges();
+        }
+
+        public void Anonymize(string id)
+        {
+            var user = Get(id);
+            Update(user);
+
+            user.UserName = null;
+            user.NormalizedUserName = null;
+            user.Email = null;
+            user.NormalizedEmail = null;
+            user.EmailConfirmed = false;
+            user.PasswordHash = null;
+            user.SecurityStamp = null;
+            user.ConcurrencyStamp = null;
+            user.PhoneNumber = null;
+            user.PhoneNumberConfirmed = false;
+            user.TwoFactorEnabled = false;
+            user.LockoutEnd = null;
+            user.LockoutEnabled = false;
+            user.AccessFailedCount = 0;
+            user.IsActive = false;
+
+            switch (user)
+            {
+                case Client c:
+                    c.Name = null;
+                    c.Surname = null;
+                    c.AddressBook = null;
+                    break;
+                case BusinessClient b:
+                    b.Nip = null;
+                    b.AddressBook = null;
+                    b.CompanyName = null;
+                    break;
+                case Worker w:
+                    w.Name = null;
+                    w.Salary = 0;
+                    w.Surname = null;
+                    w.WarehouseId = -1;
+                    w.WarehouseType = null;
+                    break;
+            }
+            Save();
         }
     }
 }

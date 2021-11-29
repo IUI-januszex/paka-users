@@ -60,7 +60,7 @@ namespace PakaUsers.Controllers
             return Ok(UserResponseDto.Of(user));
         }
 
-        [HttpDelete("{id:Guid}")]
+        [HttpDelete("{id:guid}")]
         public IActionResult DeleteUser(Guid id)
         {
             if (!_userService.HasCurrentUserAnyRole(UserType.Admin))
@@ -68,10 +68,30 @@ namespace PakaUsers.Controllers
                 return _statusCodeHelper.UnauthorizedErrorResponse();
             }
 
-            ///TODO żeby usuwało wszystko poza id i na HttpPut - zanonimizować - dodatkowy endpoint - tylko admin
             _userRepository.Delete(id.ToString());
             _userRepository.Save();
             return NoContent();
+        }
+
+        [HttpPut]
+        [Route("/anonymize/{id:guid}")]
+        public IActionResult AnonymizeUser(Guid id)
+        {
+            if (!_userService.HasCurrentUserAnyRole(UserType.Admin))
+            {
+                return _statusCodeHelper.UnauthorizedErrorResponse();
+            }
+
+            if (IsCurrentUserId(id.ToString()))
+            {
+                //admin nie może zanonimizować siebie
+                return _statusCodeHelper.UnauthorizedErrorResponse();
+            }
+            
+            _userRepository.Anonymize(id.ToString());
+            
+            return Ok();
+
         }
 
         [HttpPut("{id:guid}")]
