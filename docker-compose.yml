@@ -3,13 +3,16 @@ version: "3.8"
 services:
   postgres:
     image: postgres:14.1-alpine
+    expose:
+      - "5433"
     ports:
-      - "5432:5432"
+      - "5433:5433"
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: users_database
+    command: -p 5433
     networks:
       - paka
   pakausers:
