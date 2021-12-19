@@ -48,7 +48,7 @@ namespace PakaUsers.Controllers
         }
 
         [HttpGet]
-        [Route("/email/{email}")]
+        [Route("email/{email}")]
         public IActionResult GetUserByEmail(string email)
         {
             if (!_userService.IsUserLogged())
@@ -74,7 +74,7 @@ namespace PakaUsers.Controllers
         }
 
         [HttpPut]
-        [Route("/anonymize/{id:guid}")]
+        [Route("anonymize/{id:guid}")]
         public IActionResult AnonymizeUser(Guid id)
         {
             if (!_userService.HasCurrentUserAnyRole(UserType.Admin))
@@ -161,7 +161,7 @@ namespace PakaUsers.Controllers
         }
 
         [HttpGet]
-        [Route("/me/address-book")]
+        [Route("me/address-book")]
         public IActionResult Address()
         {
             return !_userService.HasCurrentUserAnyRole(UserType.ClientBiz, UserType.ClientInd) 
@@ -170,7 +170,7 @@ namespace PakaUsers.Controllers
         }
 
         [HttpPut]
-        [Route("/activate-user/{id:Guid}")]
+        [Route("activate-user/{id:Guid}")]
         public IActionResult Activate(Guid id, [FromBody] ActivationDto request)
         {
             if (!_userService.HasCurrentUserAnyRole(UserType.Admin))

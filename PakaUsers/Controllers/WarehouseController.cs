@@ -9,6 +9,8 @@ using PakaUsers.Services;
 
 namespace PakaUsers.Controllers
 {
+    [ApiController]
+    [Route("api/warehouse")]
     public class WarehouseController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
@@ -22,7 +24,7 @@ namespace PakaUsers.Controllers
         }
 
         [HttpGet]
-        [Route("/logisticians/{id:long}")]
+        [Route("logisticians/{id:long}")]
         public IActionResult GetLogisticiansByWarehouseId(long id)
         {
             if (!_userService.HasCurrentUserAnyRole(UserType.Admin, UserType.Logistician))
@@ -39,7 +41,7 @@ namespace PakaUsers.Controllers
         }
 
         [HttpGet]
-        [Route("/couriers/{id:long}")]
+        [Route("couriers/{id:long}")]
         public IActionResult GetCouriersByWarehouseId(long id)
         {
             if (!_userService.HasCurrentUserAnyRole(UserType.Admin))
