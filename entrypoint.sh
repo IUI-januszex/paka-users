@@ -12,4 +12,5 @@ done
 
 >&2 echo "Postgresql - executing command"
 
+dotnet dev-certs https
 dotnet run --project PakaUsers
