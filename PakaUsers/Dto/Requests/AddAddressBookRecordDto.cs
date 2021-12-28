@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using PakaUsers.IdentityAuth;
 
 namespace PakaUsers.Dto.Requests
 {

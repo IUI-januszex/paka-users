@@ -42,9 +42,15 @@ namespace PakaUsers.Controllers
         [HttpGet("{id:Guid}")]
         public IActionResult GetUser(Guid id)
         {
-            return !_userService.HasCurrentUserAnyRole(UserType.Admin, UserType.Courier, UserType.Logistician) 
-                ? _statusCodeHelper.UnauthorizedErrorResponse() 
-                : Ok(UserResponseDto.Of(_userRepository.Get(id.ToString())));
+            var user = _userRepository.Get(id.ToString());
+            if (user == null)
+            {
+                return BadRequest(new Response {Message = "No user with this id!"});
+            }
+
+            return !_userService.HasCurrentUserAnyRole(UserType.Admin, UserType.Courier, UserType.Logistician)
+                ? _statusCodeHelper.UnauthorizedErrorResponse()
+                : Ok(UserResponseDto.Of(user));
         }
 
         [HttpGet]
@@ -57,6 +63,10 @@ namespace PakaUsers.Controllers
             }
 
             var user = _userRepository.GetAll().FirstOrDefault(user => user.Email == email);
+            if (user == null)
+            {
+                return BadRequest(new Response {Message = "No user with this email!"});
+            }
             return Ok(UserResponseDto.Of(user));
         }
 
@@ -67,7 +77,11 @@ namespace PakaUsers.Controllers
             {
                 return _statusCodeHelper.UnauthorizedErrorResponse();
             }
-
+            var user = _userRepository.Get(id.ToString());
+            if (user == null)
+            {
+                return BadRequest(new Response {Message = "No user with this id!"});
+            }
             _userRepository.Delete(id.ToString());
             _userRepository.Save();
             return NoContent();
@@ -87,11 +101,15 @@ namespace PakaUsers.Controllers
                 //admin nie może zanonimizować siebie
                 return _statusCodeHelper.UnauthorizedErrorResponse();
             }
+            var user = _userRepository.Get(id.ToString());
+            if (user == null)
+            {
+                return BadRequest(new Response {Message = "No user with this id!"});
+            }
             
             _userRepository.Anonymize(id.ToString());
-            
-            return Ok();
 
+            return Ok();
         }
 
         [HttpPut("{id:guid}")]
@@ -104,6 +122,10 @@ namespace PakaUsers.Controllers
             }
 
             var userToUpdate = _userRepository.Get(id.ToString());
+            if (userToUpdate == null)
+            {
+                return BadRequest(new Response {Message = "No user with this id!"});
+            }
             _userRepository.Update(user);
 
             userToUpdate.UserName = user?.UserName;
@@ -117,8 +139,8 @@ namespace PakaUsers.Controllers
         [Route("me")]
         public IActionResult Me()
         {
-            return !_userService.IsUserLogged() 
-                ? _statusCodeHelper.UnauthorizedErrorResponse() 
+            return !_userService.IsUserLogged()
+                ? _statusCodeHelper.UnauthorizedErrorResponse()
                 : Ok(UserResponseDto.Of(_userService.GetCurrentUser()));
         }
 
@@ -164,9 +186,46 @@ namespace PakaUsers.Controllers
         [Route("me/address-book")]
         public IActionResult Address()
         {
-            return !_userService.HasCurrentUserAnyRole(UserType.ClientBiz, UserType.ClientInd) 
-                ? _statusCodeHelper.UnauthorizedErrorResponse() 
+            return !_userService.HasCurrentUserAnyRole(UserType.ClientBiz, UserType.ClientInd)
+                ? _statusCodeHelper.UnauthorizedErrorResponse()
                 : Ok(_addressRepository.GetByUserId(_userService.GetCurrentUser().Id));
+        }
+
+        [HttpDelete]
+        [Route("me/address-book-record/{id:long}")]
+        public IActionResult DeleteFromAddressBook(long id)
+        {
+            if (!_userService.HasCurrentUserAnyRole(UserType.ClientBiz, UserType.ClientInd))
+            {
+                return _statusCodeHelper.UnauthorizedErrorResponse();
+            }
+
+            var user = _userService.GetCurrentUser();
+            var addressBook = _addressRepository.GetByUserId(user.Id);
+            var addressToRemove = addressBook.Find(x => x.Id == id);
+            if (addressToRemove == null)
+            {
+                return BadRequest(new Response {Message = "No address book record with this id!"});
+            }
+
+            if (addressToRemove.ClientId != user.Id && addressToRemove.BusinessClientId != user.Id)
+            {
+                return _statusCodeHelper.UnauthorizedErrorResponse();
+            }
+
+            _userRepository.Update(user);
+            switch (user)
+            {
+                case BusinessClient b:
+                    b.AddressBook.Remove(addressToRemove);
+                    break;
+                case Client c:
+                    c.AddressBook.Remove(addressToRemove);
+                    break;
+            }
+
+            _userRepository.Save();
+            return NoContent();
         }
 
         [HttpPut]
@@ -179,11 +238,15 @@ namespace PakaUsers.Controllers
             }
 
             var userToActivate = _userRepository.Get(id.ToString());
-            
+            if (userToActivate == null)
+            {
+                return BadRequest(new Response {Message = "No user with this id!"});
+            }
             if (userToActivate.UserType == UserType.Admin)
             {
-                return BadRequest(new Response{Message = "Bad request"});
+                return BadRequest(new Response {Message = "Bad request"});
             }
+
             _userRepository.Update(userToActivate);
             userToActivate.IsActive = request.IsActive;
             _userRepository.Save();

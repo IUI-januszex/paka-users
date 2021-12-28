@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PakaUsers.Dto.Requests;
+using PakaUsers.IdentityAuth;
 using PakaUsers.Model;
 
 namespace PakaUsers.Controllers
@@ -33,7 +34,8 @@ namespace PakaUsers.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
             var user = await _userManager.FindByNameAsync(model.UserName);
-            if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password)) return Unauthorized();
+            if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password)) 
+                return BadRequest(new Response{Message = "Wrong username or/and password"});
             var userRole = user.UserType;
 
             var authClaims = new List<Claim>

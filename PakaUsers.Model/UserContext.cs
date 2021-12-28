@@ -18,7 +18,7 @@ namespace PakaUsers.Model
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseNpgsql("User ID =postgres;Password=postgres;" +
-                                     "Server=postgres;Port=5433;Database=users_database;" + 
+                                     "Server=localhost;Port=5432;Database=users_database;" + 
                                      "Integrated Security=true;Pooling=true;");  //Server=localhost - rider; postgres
         }
         
