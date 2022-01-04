@@ -54,7 +54,7 @@ namespace PakaUsers.Controllers
                 Salary = request.Salary,
                 WarehouseId = request.WarehouseId,
                 WarehouseType = request.WarehouseType,
-                IsActive = false
+                IsActive = true
             };
 
             var result = await _userManager.CreateAsync(logistician, request.Password);
