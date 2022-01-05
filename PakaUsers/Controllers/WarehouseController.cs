@@ -27,7 +27,7 @@ namespace PakaUsers.Controllers
         [Route("logisticians/{id:long}")]
         public IActionResult GetLogisticiansByWarehouseId(long id)
         {
-            if (!_userService.HasCurrentUserAnyRole(UserType.Admin, UserType.Logistician))
+            if (!_userService.HasCurrentUserAnyRole(UserType.Admin))
             {
                 return _statusCodeHelper.UnauthorizedErrorResponse();
             }
@@ -44,7 +44,7 @@ namespace PakaUsers.Controllers
         [Route("couriers/{id:long}")]
         public IActionResult GetCouriersByWarehouseId(long id)
         {
-            if (!_userService.HasCurrentUserAnyRole(UserType.Admin))
+            if (!_userService.HasCurrentUserAnyRole(UserType.Admin, UserType.Logistician))
             {
                 return _statusCodeHelper.UnauthorizedErrorResponse();
             }
