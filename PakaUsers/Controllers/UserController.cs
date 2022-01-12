@@ -229,7 +229,7 @@ namespace PakaUsers.Controllers
         }
 
         [HttpPut]
-        [Route("activate-user/{id:Guid}")]
+        [Route("activate-user/{id}")]
         public IActionResult Activate(Guid id, [FromBody] ActivationDto request)
         {
             if (!_userService.HasCurrentUserAnyRole(UserType.Admin))

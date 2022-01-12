@@ -24,7 +24,8 @@ namespace PakaUsers.Dto.Responses
                 Name = user.Name,
                 Surname = user.Surname,
                 Salary = user.Salary,
-                WarehouseId = user.WarehouseId
+                WarehouseId = user.WarehouseId,
+                WarehouseType = user.WarehouseType
             };
         }
     }
