@@ -41,7 +41,7 @@ namespace PakaUsers.Controllers
         }
 
         [HttpGet]
-        [Route("couriers/{id:long}")]
+        [Route("global/{id:long}/couriers")]
         public IActionResult GetCouriersByWarehouseId(long id)
         {
             if (!_userService.HasCurrentUserAnyRole(UserType.Admin, UserType.Logistician))
@@ -53,7 +53,26 @@ namespace PakaUsers.Controllers
                 _userRepository.GetAll()
                     .Where(user => user.UserType == UserType.Courier)
                     .Cast<Courier>()
-                    .Where(courier => courier.WarehouseId == id)
+                    .Where(courier => courier.WarehouseType == "GLOBAL" &&
+                                      courier.WarehouseId == id)
+                    .Select(WorkerResponseDto.Of));
+        }
+
+        [HttpGet]
+        [Route("local/{id:long}/couriers")]
+        public IActionResult GetCouriersByLocalWarehouseId(long id)
+        {
+            if (!_userService.HasCurrentUserAnyRole(UserType.Admin, UserType.Logistician))
+            {
+                return _statusCodeHelper.UnauthorizedErrorResponse();
+            }
+
+            return Ok(
+                _userRepository.GetAll()
+                    .Where(user => user.UserType == UserType.Courier)
+                    .Cast<Courier>()
+                    .Where(courier => courier.WarehouseType == "LOCAL" &&
+                                      courier.WarehouseId == id)
                     .Select(WorkerResponseDto.Of));
         }
     }
