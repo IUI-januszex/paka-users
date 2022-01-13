@@ -36,6 +36,11 @@ namespace PakaUsers.Controllers
             var user = await _userManager.FindByNameAsync(model.UserName);
             if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password)) 
                 return BadRequest(new Response{Message = "Wrong username or/and password"});
+            if (!user.IsActive)
+            {
+                return BadRequest(new Response{Message = "Your account is not active!"});
+            }
+            
             var userRole = user.UserType;
 
             var authClaims = new List<Claim>
